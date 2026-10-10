@@ -1,7 +1,7 @@
 import psycopg2
 
 class DBManager:
-    """Клвчч для работы с информацией из БД"""
+    """Класс для работы с информацией из БД"""
     def __init__(self,db_name):
         self.connection = {
             'host': 'localhost',
@@ -9,13 +9,6 @@ class DBManager:
             'user': 'postgres',
             'password': 'i630842121'
         }
-
-    # (
-    #     host='localhost',
-    # database=db_name,
-    # user='postgres',
-    # password='i630842121'
-    # )
 
     def get_countries_and_aeroplanes_count(self):
         """Метод для получения списка всех стран с указанием кол-ва самолетов в низ"""
@@ -76,6 +69,7 @@ class DBManager:
             #на всякий случай
             cur.close()
             conn.close()
+
     def get_aeroplanes_with_keyword(self, string):
         """Метод для получения списка самолетов по ключевому слову в позывном"""
         try:
