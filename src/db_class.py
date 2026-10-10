@@ -1,8 +1,9 @@
 import psycopg2
 
+
 class DBManager:
     """Класс для работы с информацией из БД"""
-    def __init__(self,db_name):
+    def __init__(self, db_name):
         self.connection = {
             'host': 'localhost',
             'database': db_name,
@@ -22,10 +23,6 @@ class DBManager:
                         print(row)
         except Exception as exc:
             print(exc)
-        finally:
-            #на всякий случай
-            cur.close()
-            conn.close()
 
     def get_all_aeroplanes(self):
         """Метод для получения списка со всеми самолетами из БД"""
@@ -36,10 +33,6 @@ class DBManager:
                     return cur.fetchall()
         except Exception as exc:
             print(exc)
-        finally:
-            #на всякий случай
-            cur.close()
-            conn.close()
 
     def get_avg_speed(self):
         """Метод для получения средней скорости самолетов"""
@@ -50,10 +43,6 @@ class DBManager:
                     return cur.fetchall()
         except Exception as exc:
             print(exc)
-        finally:
-            #на всякий случай
-            cur.close()
-            conn.close()
 
     def get_aeroplanes_with_higher_speed(self):
         """Метод для получения списка самолетов со скоростью выше средней"""
@@ -65,10 +54,6 @@ class DBManager:
                     return cur.fetchall()
         except Exception as exc:
             print(exc)
-        finally:
-            #на всякий случай
-            cur.close()
-            conn.close()
 
     def get_aeroplanes_with_keyword(self, string):
         """Метод для получения списка самолетов по ключевому слову в позывном"""
@@ -81,7 +66,3 @@ class DBManager:
                     return cur.fetchall()
         except Exception as exc:
             print(exc)
-        finally:
-            #на всякий случай
-            cur.close()
-            conn.close()

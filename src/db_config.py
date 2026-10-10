@@ -54,7 +54,6 @@ class DBConfig:
         except Exception as exc:
             print(f'Bad connection: {exc}')
 
-
         # создаем таблицу planes
         try:
             with DBConfig.db_connection(self) as conn:
@@ -76,11 +75,12 @@ class DBConfig:
             with DBConfig.db_connection(self) as conn:
                 with conn.cursor() as cur:
                     i = 1
-                    cur.execute(f"TRUNCATE TABLE countries RESTART IDENTITY CASCADE")
+                    cur.execute("TRUNCATE TABLE countries RESTART IDENTITY CASCADE")
                     conn.commit()
                     for country in countries:
                         try:
-                            cur.execute(f"INSERT INTO countries VALUES ({i}, '{country}') ON CONFLICT (country) DO NOTHING")
+                            cur.execute(f"INSERT INTO countries VALUES ({i}, '{country}')\n"
+                                        f"ON CONFLICT (country) DO NOTHING")
                             conn.commit()
                             i += 1
                         except Exception as exc:
@@ -94,11 +94,12 @@ class DBConfig:
         try:
             with DBConfig.db_connection(self) as conn:
                 with conn.cursor() as cur:
-                    cur.execute(f"TRUNCATE TABLE planes RESTART IDENTITY CASCADE")
+                    cur.execute("TRUNCATE TABLE planes RESTART IDENTITY CASCADE")
                     for plane in planes_data:
                         cur.execute(
                             f"INSERT INTO planes(plane_id, callsign, country, velocity, altitude)\n"
-                            f"VALUES ('{plane['unique_id']}', '{plane['callsign']}', '{plane['registration']}','{plane['velocity']}', '{plane['geo_altitude']}')")
+                            f"VALUES ('{plane['unique_id']}', '{plane['callsign']}', '{plane['registration']}',"
+                            f"'{plane['velocity']}', '{plane['geo_altitude']}')")
                         conn.commit()
             print('Данные внесены в таблицу "planes"')
         except Exception as exc:
