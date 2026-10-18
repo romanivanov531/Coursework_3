@@ -1,5 +1,5 @@
 import psycopg2
-
+from src.db_config import db_password
 
 class DBManager:
     """Класс для работы с информацией из БД"""
@@ -8,7 +8,7 @@ class DBManager:
             'host': 'localhost',
             'database': db_name,
             'user': 'postgres',
-            'password': 'i630842121'
+            'password': db_password
         }
 
     def get_countries_and_aeroplanes_count(self):
@@ -30,6 +30,7 @@ class DBManager:
             with psycopg2.connect(**self.connection) as conn:
                 with conn.cursor() as cur:
                     cur.execute('SELECT * FROM planes')
+                    print(cur.fetchall())
                     return cur.fetchall()
         except Exception as exc:
             print(exc)
@@ -40,6 +41,7 @@ class DBManager:
             with psycopg2.connect(**self.connection) as conn:
                 with conn.cursor() as cur:
                     cur.execute("SELECT AVG(velocity) as AvgSpeed FROM planes")
+                    print(cur.fetchall())
                     return cur.fetchall()
         except Exception as exc:
             print(exc)
@@ -51,6 +53,7 @@ class DBManager:
                 with conn.cursor() as cur:
                     cur.execute("SELECT * FROM planes\n"
                                 "WHERE velocity > (SELECT AVG(velocity) FROM planes)")
+                    print(cur.fetchall())
                     return cur.fetchall()
         except Exception as exc:
             print(exc)

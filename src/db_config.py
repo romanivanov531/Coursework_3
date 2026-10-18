@@ -1,5 +1,11 @@
-import psycopg2
+import os
 
+import psycopg2
+from dotenv import load_dotenv
+
+
+load_dotenv()
+db_password = os.getenv('DB_PASSWORD')
 
 class DBConfig:
     """Класс для создания БД и таблиц planes и countries"""
@@ -12,7 +18,7 @@ class DBConfig:
             conn = psycopg2.connect(
                 dbname='postgres',
                 user='postgres',
-                password='i630842121',
+                password=db_password,
                 host='localhost',
                 port='5432'
             )
@@ -30,15 +36,17 @@ class DBConfig:
 
     def db_connection(self):
         """Метод для соединения с БД"""
-        conn = psycopg2.connect(
-            host='localhost',
-            database=self.db_name,
-            user='postgres',
-            password='i630842121'
-        )
-        if conn:
-            print(f'Поключено к {self.db_name}')
-        return conn
+        try:
+            conn = psycopg2.connect(
+                host='localhost',
+                database=self.db_name,
+                user='postgres',
+                password=db_password
+            )
+
+            return conn
+        except Exception as exc:
+            print(exc)
 
     def create_db_tables(self) -> None:
         """Метод для создания таблиц country и planes"""
@@ -52,7 +60,7 @@ class DBConfig:
                                 )
                     conn.commit()
         except Exception as exc:
-            print(f'Bad connection: {exc}')
+            print(exc)
 
         # создаем таблицу planes
         try:
@@ -67,7 +75,7 @@ class DBConfig:
                                 )
                     conn.commit()
         except Exception as exc:
-            print(f'Bad connection: {exc}')
+            print(exc)
 
     def insert_into_countries(self, countries: list) -> None:
         """Метод для добавления уникальных стран в БД, таблица country"""
@@ -99,7 +107,8 @@ class DBConfig:
                         cur.execute(
                             f"INSERT INTO planes(plane_id, callsign, country, velocity, altitude)\n"
                             f"VALUES ('{plane['unique_id']}', '{plane['callsign']}', '{plane['registration']}',"
-                            f"'{plane['velocity']}', '{plane['geo_altitude']}')")
+                            f"'{plane['velocity']}', '{plane['geo_altitude']}')"
+                            f"ON CONFLICT DO NOTHING")
                         conn.commit()
             print('Данные внесены в таблицу "planes"')
         except Exception as exc:
