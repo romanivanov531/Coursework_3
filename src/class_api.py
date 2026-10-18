@@ -24,7 +24,7 @@ class BasicAPI(Api):
         self.opensky_url = 'https://opensky-network.org/api/states/all?'
         self.openstreetmap_url = 'https://nominatim.openstreetmap.org/search'
 
-    def get_coordinates(self, country: str):
+    def get_coordinates(self, country: str)  -> list:
         """Метод для получения крайних координат выбранной страны.
         Возвращает список координат в формате:[Южная широта, Северная широта, Западная долгота, Восточная долгота]"""
         headers = {
@@ -40,7 +40,7 @@ class BasicAPI(Api):
         coordinates = data[0]['boundingbox']
         return coordinates
 
-    def get_aeroplanes(self, coordinates: list):
+    def get_aeroplanes(self, coordinates: list) -> list[dict]:
         """Метод для получения информации о полетах в заданных координатах.
         Возвращает словарь в формате json"""
         params = {
@@ -52,7 +52,16 @@ class BasicAPI(Api):
 
         response = requests.get(url=self.opensky_url, params=params)
         data = response.json()
+        # print(data)
         planes_list = []
+        if not data['states']:
+            return []
+        i = 0
+        for plane in data['states']:
+            if 'None' in plane:
+                del data['states'][i]
+            else:
+                i += 1
         for plan in data['states']:
             plane_dict = ({
                 'unique_id' : plan[0],
@@ -63,4 +72,5 @@ class BasicAPI(Api):
                 'on_ground' : plan[8]
             })
             planes_list.append(plane_dict)
+
         return planes_list
